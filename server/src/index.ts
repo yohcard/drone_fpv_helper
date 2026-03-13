@@ -24,7 +24,24 @@ const server = Fastify({
 
 // Register plugins
 server.register(cors, {
-  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  origin: (origin, cb) => {
+    const hostname = origin ? new URL(origin).hostname : ''
+    const allowedOrigins = [
+      process.env.CLIENT_URL,
+      "http://localhost:5173",
+      "http://localhost:3000"
+    ].filter(Boolean) as string[]
+
+    if (!origin || 
+        allowedOrigins.includes(origin) || 
+        hostname === 'localhost' || 
+        hostname === '127.0.0.1' ||
+        hostname.endsWith('.vercel.app')) {
+      cb(null, true)
+      return
+    }
+    cb(new Error("Not allowed by CORS"), false)
+  },
   credentials: true,
 })
 
