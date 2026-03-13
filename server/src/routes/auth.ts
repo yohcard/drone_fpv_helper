@@ -31,7 +31,7 @@ export async function authRoutes(server: FastifyInstance) {
       path: "/",
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     })
 
     return { 
@@ -66,7 +66,7 @@ export async function authRoutes(server: FastifyInstance) {
       path: "/",
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     })
 
     return {
@@ -82,7 +82,12 @@ export async function authRoutes(server: FastifyInstance) {
 
   // Déconnexion
   server.post("/logout", async (request, reply) => {
-    reply.clearCookie("accessToken")
+    reply.clearCookie("accessToken", {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    })
     return { message: "Déconnexion réussie" }
   })
 
