@@ -40,7 +40,7 @@ export class User {
   @Column({ nullable: true })
   resetPasswordToken?: string
 
-  @Column({ type: "timestamp", nullable: true })
+  @Column({ type: "datetime", nullable: true })
   resetPasswordExpires?: Date
 
   @Column({ nullable: true })
