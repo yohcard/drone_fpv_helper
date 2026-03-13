@@ -44,17 +44,17 @@ export class EmailService {
   async sendWelcomeEmail(user: User) {
     const html = `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-        <h1 style="color: #f97316;">Bienvenue chez drone-builder.ch !</h1>
+        <h1 style="color: #f97316;">Bienvenue chez dronefpvbuilder.shop !</h1>
         <p>Bonjour ${user.firstName},</p>
         <p>Votre compte a été créé avec succès. Vous pouvez maintenant soumettre vos demandes de réparation ou de montage de drones FPV.</p>
         <div style="margin: 30px 0;">
           <a href="${process.env.CLIENT_URL}/login" style="background-color: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Se connecter</a>
         </div>
-        <p>À bientôt,<br>L'équipe drone-builder.ch</p>
+        <p>À bientôt,<br>L'équipe dronefpvbuilder</p>
       </div>
     `
 
-    await this.sendEmail(user.email, 'Bienvenue sur drone-builder.ch', html)
+    await this.sendEmail(user.email, 'Bienvenue sur dronefpvbuilder.shop', html)
   }
 
   /**
@@ -71,7 +71,7 @@ export class EmailService {
           <p style="margin: 0;"><strong>Statut actuel :</strong> ${request.status}</p>
         </div>
         <p>Vous pouvez suivre l'avancement en temps réel sur votre tableau de bord.</p>
-        <p>À bientôt,<br>L'équipe drone-builder.ch</p>
+        <p>À bientôt,<br>L'équipe dronefpvbuilder</p>
       </div>
     `
 
@@ -102,7 +102,7 @@ export class EmailService {
         <div style="margin: 30px 0;">
           <a href="${process.env.CLIENT_URL}/dashboard/requests/${request.id}" style="border: 2px solid #f97316; color: #f97316; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">Voir ma demande</a>
         </div>
-        <p>À bientôt,<br>L'équipe drone-builder.ch</p>
+        <p>À bientôt,<br>L'équipe dronefpvbuilder</p>
       </div>
     `
 
@@ -140,7 +140,7 @@ export class EmailService {
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
         <h2 style="color: #f97316;">Réinitialisation de votre mot de passe</h2>
         <p>Bonjour ${user.firstName},</p>
-        <p>Vous avez demandé la réinitialisation de votre mot de passe pour votre compte drone-builder.ch.</p>
+        <p>Vous avez demandé la réinitialisation de votre mot de passe pour votre compte dronefpvbuilder.shop.</p>
         <p>Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe. Ce lien est valable pendant 1 heure.</p>
         <div style="margin: 30px 0; text-align: center;">
           <a href="${resetUrl}" style="background-color: #f97316; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Réinitialiser mon mot de passe</a>
