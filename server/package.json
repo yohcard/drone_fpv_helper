@@ -14,16 +14,17 @@
     "@fastify/cors": "^9.0.1",
     "@fastify/jwt": "^8.0.1",
     "@fastify/multipart": "^8.2.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/nodemailer": "^6.4.14",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "fastify": "^4.26.2",
     "nodemailer": "^6.9.13",
     "pg": "^8.11.5",
     "reflect-metadata": "^0.2.2",
+    "resend": "^6.4.2",
     "sqlite3": "^5.1.7",
-    "typeorm": "^0.3.20",
-    "@types/bcrypt": "^5.0.2",
-    "@types/nodemailer": "^6.4.14"
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@types/node": "^20.12.7",

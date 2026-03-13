@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer'
+import { Resend } from 'resend'
 import { User } from '../entities/User.js'
 import { RepairRequest } from '../entities/RepairRequest.js'
 
@@ -6,9 +7,17 @@ import { RepairRequest } from '../entities/RepairRequest.js'
  * Service pour l'envoi d'emails transactionnels
  */
 export class EmailService {
-  private transporter: nodemailer.Transporter
+  private transporter?: nodemailer.Transporter
+  private resend?: Resend
 
   constructor() {
+    if (process.env.RESEND_API_KEY) {
+      this.resend = new Resend(process.env.RESEND_API_KEY)
+      console.log('EmailService configured to use Resend API')
+      return
+    }
+
+    console.log('EmailService configured to use SMTP/Ethereal fallback')
     const config: any = {
       host: process.env.SMTP_HOST || 'smtp.ethereal.email',
       port: Number(process.env.SMTP_PORT) || 587,
@@ -150,34 +159,56 @@ export class EmailService {
    */
   public async sendEmail(to: string, subject: string, html: string) {
     try {
-      const info = await this.transporter.sendMail({
-        from: `"drone-builder.ch" <${process.env.SMTP_FROM || 'noreply@drone-builder.ch'}>`,
-        to,
-        subject,
-        html,
-      })
-      
-      console.log(`Email sent to ${to}: ${subject}`)
-      
-      // Si on utilise Ethereal ou le transport JSON, on affiche les détails
-      if (!process.env.SMTP_HOST || process.env.SMTP_HOST.includes('ethereal')) {
-        console.log('--- Email Detail (Dev Mode) ---')
-        if (info.message) {
-          // Log JSON content or extract URL
-          const messageObj = JSON.parse(info.message)
-          console.log(`To: ${messageObj.to}`)
-          console.log(`Subject: ${messageObj.subject}`)
-          // Extraire l'URL de réinitialisation du HTML pour la rendre facile à cliquer
-          const urlMatch = messageObj.html.match(/href="([^"]+)"/)
-          if (urlMatch) {
-            console.log(`---> ACTION URL: ${urlMatch[1]}`)
+      const fromEmail = process.env.SMTP_FROM || 'noreply@dronefpvbuilder.shop'
+
+      // Utilisation de l'API Resend (Priorité 1)
+      if (this.resend) {
+        const { data, error } = await this.resend.emails.send({
+          from: `"dronefpvbuilder" <${fromEmail}>`,
+          to: [to],
+          subject,
+          html,
+        })
+
+        if (error) {
+          console.error(`Resend failed to send email to ${to}:`, error)
+        } else {
+          console.log(`Email sent via Resend to ${to}: ${subject} (ID: ${data?.id})`)
+        }
+        return
+      }
+
+      // Fallback SMTP / Ethereal dev mode
+      if (this.transporter) {
+        const info = await this.transporter.sendMail({
+          from: `"dronefpvbuilder" <${fromEmail}>`,
+          to,
+          subject,
+          html,
+        })
+        
+        console.log(`Email sent via SMTP to ${to}: ${subject}`)
+        
+        // Si on utilise Ethereal ou le transport JSON, on affiche les détails
+        if (!process.env.SMTP_HOST || process.env.SMTP_HOST.includes('ethereal')) {
+          console.log('--- Email Detail (Dev Mode) ---')
+          if (info.message) {
+            // Log JSON content or extract URL
+            const messageObj = JSON.parse(info.message)
+            console.log(`To: ${messageObj.to}`)
+            console.log(`Subject: ${messageObj.subject}`)
+            // Extraire l'URL de réinitialisation du HTML pour la rendre facile à cliquer
+            const urlMatch = messageObj.html.match(/href="([^"]+)"/)
+            if (urlMatch) {
+              console.log(`---> ACTION URL: ${urlMatch[1]}`)
+            }
           }
+          const previewUrl = nodemailer.getTestMessageUrl(info)
+          if (previewUrl) {
+            console.log('Preview URL: %s', previewUrl)
+          }
+          console.log('--------------------------------')
         }
-        const previewUrl = nodemailer.getTestMessageUrl(info)
-        if (previewUrl) {
-          console.log('Preview URL: %s', previewUrl)
-        }
-        console.log('--------------------------------')
       }
     } catch (error) {
       console.error(`Failed to send email to ${to}:`, error)
