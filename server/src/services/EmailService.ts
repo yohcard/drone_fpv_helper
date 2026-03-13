@@ -114,6 +114,30 @@ export class EmailService {
   }
 
   /**
+   * Notification de réinitialisation de mot de passe
+   */
+  async sendPasswordResetEmail(user: User, token: string) {
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${token}`
+    
+    const html = `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+        <h2 style="color: #f97316;">Réinitialisation de votre mot de passe</h2>
+        <p>Bonjour ${user.firstName},</p>
+        <p>Vous avez demandé la réinitialisation de votre mot de passe pour votre compte drone-builder.ch.</p>
+        <p>Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe. Ce lien est valable pendant 1 heure.</p>
+        <div style="margin: 30px 0; text-align: center;">
+          <a href="${resetUrl}" style="background-color: #f97316; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Réinitialiser mon mot de passe</a>
+        </div>
+        <p style="font-size: 12px; color: #666;">Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet email en toute sécurité. Votre mot de passe actuel restera inchangé.</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+        <p style="font-size: 11px; color: #999;">Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :<br>${resetUrl}</p>
+      </div>
+    `
+
+    await this.sendEmail(user.email, 'Réinitialisation de votre mot de passe', html)
+  }
+
+  /**
    * Méthode générique d'envoi
    */
   public async sendEmail(to: string, subject: string, html: string) {

@@ -38,6 +38,12 @@ export class User {
   role!: "CLIENT" | "ADMIN"
 
   @Column({ nullable: true })
+  resetPasswordToken?: string
+
+  @Column({ type: "timestamp", nullable: true })
+  resetPasswordExpires?: Date
+
+  @Column({ nullable: true })
   googleId?: string
 
   @OneToMany(() => RepairRequest, (request) => request.user)

@@ -110,4 +110,32 @@ export async function authRoutes(server: FastifyInstance) {
       }
     }
   })
+
+  // Mot de passe oublié (demande)
+  server.post("/forgot-password", async (request, reply) => {
+    const { email } = request.body as any
+    if (!email) {
+      return reply.status(400).send({ error: "L'email est requis" })
+    }
+
+    await authService.requestPasswordReset(email)
+    
+    // Pour des raisons de sécurité, on renvoie un message de succès même si l'email n'existe pas
+    return { message: "Si un compte est associé à cet email, un lien de réinitialisation a été envoyé." }
+  })
+
+  // Réinitialisation du mot de passe (action)
+  server.post("/reset-password", async (request, reply) => {
+    const { token, password } = request.body as any
+    if (!token || !password) {
+      return reply.status(400).send({ error: "Token et mot de passe requis" })
+    }
+
+    const success = await authService.resetPassword(token, password)
+    if (!success) {
+      return reply.status(400).send({ error: "Le lien de réinitialisation est invalide ou a expiré" })
+    }
+
+    return { message: "Votre mot de passe a été réinitialisé avec succès" }
+  })
 }
