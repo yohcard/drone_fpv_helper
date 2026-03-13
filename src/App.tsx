@@ -11,6 +11,7 @@ import ResetPassword from '@/pages/auth/ResetPassword'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import DashboardRoutes from '@/pages/dashboard'
 import AdminRoutes from '@/pages/admin'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import './App.css'
 
 /** Application principale avec routing */
@@ -65,6 +66,7 @@ function App() {
             </Routes>
           </main>
           <Footer />
+          <SpeedInsights />
         </div>
       </BrowserRouter>
     </AuthProvider>
