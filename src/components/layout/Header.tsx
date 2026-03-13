@@ -80,6 +80,14 @@ export default function Header() {
                       <span>Tableau de bord</span>
                     </Link>
                   </DropdownMenuItem>
+                  {user.role === 'ADMIN' && (
+                    <DropdownMenuItem asChild className="focus:bg-bg-secondary focus:text-accent">
+                      <Link to="/admin" className="cursor-pointer">
+                        <Wrench className="mr-2 h-4 w-4" />
+                        <span>Administration</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild className="focus:bg-bg-secondary focus:text-text-primary">
                     <Link to="/dashboard/profile" className="cursor-pointer">
                       <UserIcon className="mr-2 h-4 w-4" />
@@ -150,6 +158,14 @@ export default function Header() {
                     Tableau de bord
                   </Link>
                 </Button>
+                {user.role === 'ADMIN' && (
+                  <Button variant="outline" className="w-full justify-start border-accent/30 text-accent" size="sm" asChild>
+                    <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
+                      <Wrench className="mr-2 h-4 w-4" />
+                      Administration
+                    </Link>
+                  </Button>
+                )}
                 <Button variant="ghost" className="w-full justify-start text-error hover:bg-error/10" size="sm" onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Déconnexion

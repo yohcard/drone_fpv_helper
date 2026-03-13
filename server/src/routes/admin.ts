@@ -23,6 +23,14 @@ export async function adminRoutes(server: FastifyInstance) {
       order: { createdAt: "DESC" }
     })
   })
+  
+  // Détail d'une demande
+  server.get("/requests/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as any
+    const repairRequest = await requestService.getRequestById(id)
+    if (!repairRequest) return reply.status(404).send({ error: "Demande non trouvée" })
+    return repairRequest
+  })
 
   // Changer le statut
   server.patch("/requests/:id/status", async (request: FastifyRequest, reply: FastifyReply) => {
@@ -38,15 +46,15 @@ export async function adminRoutes(server: FastifyInstance) {
   // Ajouter une dépense
   server.post("/requests/:id/expenses", async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as any
-    const { description, amount, date } = request.body as any
+    const { title, amount, date } = request.body as any
     const admin = (request as any).user
 
     const expenseRepository = AppDataSource.getRepository(Expense)
     const expense = expenseRepository.create({
       requestId: id,
-      description,
+      description: title, // Le frontend envoie 'title'
       amount,
-      date: new Date(date),
+      date: date ? new Date(date) : new Date(),
       addedByAdminId: admin.id
     })
 
@@ -54,7 +62,7 @@ export async function adminRoutes(server: FastifyInstance) {
   })
 
   // Ajouter du temps
-  server.post("/requests/:id/work-sessions", async (request: FastifyRequest, reply: FastifyReply) => {
+  server.post("/requests/:id/sessions", async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as any
     const { durationHalfHours, note } = request.body as any
 

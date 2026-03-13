@@ -22,6 +22,7 @@ export default function AdminRequests() {
   const [requests, setRequests] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('TOUS')
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -43,11 +44,16 @@ export default function AdminRequests() {
     fetchRequests()
   }, [])
 
-  const filteredRequests = requests.filter(req => 
-    req.ticketNumber.toLowerCase().includes(search.toLowerCase()) ||
-    req.issueType.toLowerCase().includes(search.toLowerCase()) ||
-    `${req.user?.firstName} ${req.user?.lastName}`.toLowerCase().includes(search.toLowerCase())
-  )
+  const filteredRequests = requests.filter(req => {
+    const matchesSearch = 
+      req.ticketNumber.toLowerCase().includes(search.toLowerCase()) ||
+      req.issueType.toLowerCase().includes(search.toLowerCase()) ||
+      `${req.user?.firstName} ${req.user?.lastName}`.toLowerCase().includes(search.toLowerCase())
+    
+    const matchesStatus = statusFilter === 'TOUS' || req.status === statusFilter
+    
+    return matchesSearch && matchesStatus
+  })
 
   return (
     <PageWrapper className="space-y-8 pb-10">
@@ -74,10 +80,19 @@ export default function AdminRequests() {
           />
         </div>
         <div className="w-full lg:w-auto flex items-center gap-2 border-t lg:border-t-0 lg:border-l border-white/5 pt-4 lg:pt-0 lg:pl-4 overflow-x-auto no-scrollbar">
-          <Badge variant="outline" className="h-8 px-4 cursor-pointer hover:bg-white/5 transition-colors border-white/10 font-black tracking-tighter text-[10px]">TOUS</Badge>
-          <Badge variant="outline" className="h-8 px-4 border-accent text-accent cursor-pointer hover:bg-accent/5 transition-colors font-black tracking-tighter text-[10px]">EN COURS</Badge>
-          <Badge variant="outline" className="h-8 px-4 cursor-pointer hover:bg-white/5 transition-colors border-white/10 font-black tracking-tighter text-[10px]">RECU</Badge>
-          <Badge variant="outline" className="h-8 px-4 cursor-pointer hover:bg-white/5 transition-colors border-white/10 font-black tracking-tighter text-[10px]">TERMINE</Badge>
+          {['TOUS', 'RECU', 'DIAGNOSTIC', 'EN_REPARATION', 'TERMINE'].map((status) => (
+            <Badge 
+              key={status}
+              variant="outline" 
+              className={cn(
+                "h-8 px-4 cursor-pointer hover:bg-white/5 transition-colors border-white/10 font-black tracking-tighter text-[10px]",
+                statusFilter === status && "border-accent text-accent bg-accent/5"
+              )}
+              onClick={() => setStatusFilter(status)}
+            >
+              {status}
+            </Badge>
+          ))}
         </div>
         <Button variant="ghost" size="icon" className="shrink-0 h-11 w-11 rounded-xl bg-white/5 hover:bg-accent/10 hover:text-accent transition-colors hidden lg:flex">
           <Filter className="w-5 h-5" />
@@ -139,8 +154,13 @@ export default function AdminRequests() {
                              {(req.expenses?.reduce((a: any, b: any) => a + Number(b.amount), 0) + (req.workSessions?.reduce((a: any, b: any) => a + Number(b.durationHalfHours), 0) || 0) * 25).toFixed(2)} CHF
                           </p>
                         </div>
-                        <div className="p-3 bg-white/5 rounded-xl group-hover:bg-accent group-hover:text-bg-primary transition-all duration-300">
-                           <ArrowRight className="w-5 h-5 transition-transform duration-500 group-hover:translate-x-1" />
+                        <div className="flex items-center gap-3">
+                           <Button variant="outline" size="sm" className="hidden sm:flex opacity-0 group-hover:opacity-100 transition-opacity" asChild>
+                             <span>Gérer</span>
+                           </Button>
+                           <div className="p-3 bg-white/5 rounded-xl group-hover:bg-accent group-hover:text-bg-primary transition-all duration-300">
+                              <ArrowRight className="w-5 h-5 transition-transform duration-500 group-hover:translate-x-1" />
+                           </div>
                         </div>
                       </div>
                     </div>
