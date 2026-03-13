@@ -93,16 +93,13 @@ export default function ForgotPassword() {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-12 rounded-xl shadow-lg shadow-accent/20 font-black uppercase italic tracking-widest text-base group overflow-hidden"
+                className="w-full h-12 shadow-lg shadow-accent/20 font-black uppercase italic tracking-widest text-base"
               >
-                <span className="relative z-10 flex items-center gap-2">
-                  {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <>Envoyer le lien</>
-                  )}
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-accent to-orange-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                {isLoading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>Envoyer le lien</>
+                )}
               </Button>
             </form>
           ) : (
