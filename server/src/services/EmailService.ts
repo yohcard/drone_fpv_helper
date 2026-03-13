@@ -12,7 +12,7 @@ export class EmailService {
     const config: any = {
       host: process.env.SMTP_HOST || 'smtp.ethereal.email',
       port: Number(process.env.SMTP_PORT) || 587,
-      secure: process.env.SMTP_SECURE === 'true',
+      secure: String(process.env.SMTP_SECURE).toLowerCase() === 'true',
     }
 
     if (process.env.SMTP_USER && process.env.SMTP_PASS) {
