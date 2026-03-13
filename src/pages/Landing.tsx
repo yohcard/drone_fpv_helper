@@ -6,16 +6,13 @@ import {
   MessageSquare,
 
   CheckCircle,
-  Star,
   Send,
   ArrowRight,
-  ImageIcon,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
 
 /* ─────────────────────────────────────────────
@@ -63,37 +60,7 @@ const steps = [
   },
 ]
 
-/** Témoignages clients mockés */
-const testimonials = [
-  {
-    name: 'Lucas M.',
-    location: 'Lausanne',
-    rating: 5,
-    text: 'Mon quad avait un ESC grillé après un crash. Intervention rapide, moteur changé en 30 minutes. Tarif très correct pour un service à domicile.',
-  },
-  {
-    name: 'Sarah K.',
-    location: 'Genève',
-    rating: 5,
-    text: 'Montage complet d\'un 5" freestyle. Résultat impeccable, câblage propre, Betaflight configuré aux petits oignons. Je recommande !',
-  },
-  {
-    name: 'Thomas R.',
-    location: 'Fribourg',
-    rating: 4,
-    text: 'Problème de VTX résolu en quelques minutes. Le technicien est passionné et connaît son sujet. Service pro.',
-  },
-]
 
-/** Données de la galerie (placeholders) */
-const galleryItems = [
-  { label: 'Réparation moteur brushless', aspect: 'aspect-square' },
-  { label: 'Montage 5" Freestyle', aspect: 'aspect-[4/3]' },
-  { label: 'Soudure flight controller', aspect: 'aspect-[3/4]' },
-  { label: 'Build longrange', aspect: 'aspect-square' },
-  { label: 'Remplacement frame carbone', aspect: 'aspect-[4/3]' },
-  { label: 'Configuration Betaflight', aspect: 'aspect-[3/4]' },
-]
 
 /* ─────────────────────────────────────────────
    Composant Landing Page
@@ -105,8 +72,6 @@ export default function Landing() {
       <HeroSection />
       <ServicesSection />
       <ProcessSection />
-      <TestimonialsSection />
-      <GallerySection />
       <ContactSection />
     </div>
   )
@@ -263,105 +228,6 @@ function ProcessSection() {
               <p className="text-text-muted text-sm leading-relaxed max-w-xs mx-auto">
                 {step.description}
               </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ────── Témoignages ────── */
-
-function TestimonialsSection() {
-  return (
-    <section id="testimonials" className="py-24 bg-bg-secondary">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* En-tête */}
-        <div className="text-center mb-16">
-          <p className="text-accent font-heading text-sm font-bold uppercase tracking-widest mb-3">
-            Témoignages
-          </p>
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4">
-            Ce qu'en disent les clients
-          </h2>
-        </div>
-
-        {/* Cartes témoignages */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((t) => (
-            <Card key={t.name} className="hover:border-accent/20 transition-all duration-300">
-              <CardContent className="p-8">
-                {/* Étoiles */}
-                <div className="flex gap-1 mb-4">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-4 h-4 ${
-                        i < t.rating ? 'fill-accent text-accent' : 'text-border'
-                      }`}
-                    />
-                  ))}
-                </div>
-
-                {/* Texte */}
-                <p className="text-sm text-text-muted leading-relaxed mb-6">
-                  "{t.text}"
-                </p>
-
-                <Separator className="mb-4" />
-
-                {/* Auteur */}
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
-                    <span className="text-accent font-heading font-bold text-sm">
-                      {t.name[0]}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold">{t.name}</p>
-                    <p className="text-xs text-text-muted">{t.location}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ────── Galerie ────── */
-
-function GallerySection() {
-  return (
-    <section id="gallery" className="py-24 bg-bg-primary">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* En-tête */}
-        <div className="text-center mb-16">
-          <p className="text-accent font-heading text-sm font-bold uppercase tracking-widest mb-3">
-            Portfolio
-          </p>
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4">
-            Galerie de réparations
-          </h2>
-          <p className="text-text-muted max-w-xl mx-auto">
-            Quelques exemples de réparations et montages réalisés.
-          </p>
-        </div>
-
-        {/* Grid asymétrique avec placeholders */}
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-          {galleryItems.map((item) => (
-            <div
-              key={item.label}
-              className={`${item.aspect} break-inside-avoid rounded-xl border border-border bg-bg-card flex flex-col items-center justify-center gap-3 overflow-hidden group hover:border-accent/30 transition-all duration-300`}
-            >
-              <ImageIcon className="w-10 h-10 text-text-muted/40 group-hover:text-accent/40 transition-colors" />
-              <span className="text-xs text-text-muted/60 font-medium px-4 text-center">
-                {item.label}
-              </span>
             </div>
           ))}
         </div>
