@@ -24,6 +24,7 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/lib/AuthContext'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { toast } from 'sonner'
+import InvoiceTemplate from '@/components/admin/InvoiceTemplate'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1'
 
@@ -40,7 +41,7 @@ export default function AdminRequestDetail() {
   
   // States for logging
   const [sessionDuration, setSessionDuration] = useState('1')
-  const [expenseTitle, setExpenseTitle] = useState('')
+  const [expenseDescription, setExpenseDescription] = useState('')
   const [expenseAmount, setExpenseAmount] = useState('')
 
   const fetchDetail = async () => {
@@ -96,24 +97,31 @@ export default function AdminRequestDetail() {
   }
 
   const handleAddExpense = async () => {
-    if (!expenseTitle || !expenseAmount) return
+    if (!expenseDescription || !expenseAmount) return
     try {
       await fetch(`${API_URL}/admin/requests/${id}/expenses`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: expenseTitle, amount: Number(expenseAmount) }),
+        body: JSON.stringify({ description: expenseDescription, amount: Number(expenseAmount) }),
         credentials: 'include'
       })
-      setExpenseTitle('')
+      setExpenseDescription('')
       setExpenseAmount('')
       toast.success('Pièce ajoutée', {
-        description: `${expenseTitle} a été ajoutée à la facturation.`,
+        description: `${expenseDescription} a été ajoutée à la facturation.`,
       })
       fetchDetail()
     } catch (error) {
        toast.error('Erreur', { description: 'Échec de l\'ajout de la pièce' })
        console.error(error)
     }
+  }
+
+  const handleGenerateInvoice = () => {
+    window.open(`/admin/requests/${id}/invoice`, '_blank')
+    toast.success('Facture générée', {
+        description: 'Le document a été ouvert dans un nouvel onglet.'
+    })
   }
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -336,14 +344,14 @@ export default function AdminRequestDetail() {
                         <div className="grid grid-cols-3 gap-2">
                             <Input 
                                 placeholder="Désignation" 
-                                className="col-span-2 h-10 bg-white/5 border-white/5 text-xs font-bold rounded-xl"
-                                value={expenseTitle}
-                                onChange={(e) => setExpenseTitle(e.target.value)}
+                                className="col-span-2 h-10 bg-white/10 border-white/20 text-xs font-bold rounded-xl focus:bg-white/20"
+                                value={expenseDescription}
+                                onChange={(e) => setExpenseDescription(e.target.value)}
                             />
                             <div className="flex gap-2">
                                 <Input 
                                     placeholder="CHF" 
-                                    className="h-10 bg-white/5 border-white/5 text-xs font-bold rounded-xl font-mono text-success"
+                                    className="h-10 bg-white/20 border-white/30 text-xs font-black rounded-xl font-mono text-success placeholder:text-success/50"
                                     value={expenseAmount}
                                     onChange={(e) => setExpenseAmount(e.target.value)}
                                 />
@@ -357,7 +365,7 @@ export default function AdminRequestDetail() {
                            {request.expenses?.map((exp: any) => (
                                <div key={exp.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 group hover:border-success/30 transition-all">
                                    <div className="flex items-center gap-3 font-black text-xs">
-                                       <span className="text-text-primary px-2">{exp.title}</span>
+                                       <span className="text-text-primary px-2">{exp.description}</span>
                                    </div>
                                    <span className="font-mono font-bold text-success text-sm italic">{Number(exp.amount).toFixed(2)}</span>
                                </div>
@@ -450,7 +458,10 @@ export default function AdminRequestDetail() {
                     </div>
                 </CardContent>
                 <CardFooter className="bg-white/5 pt-6 flex flex-col gap-3">
-                    <Button className="w-full h-12 rounded-2xl shadow-xl shadow-success/10 bg-success hover:bg-success/90 text-bg-primary font-black uppercase tracking-widest transition-transform hover:scale-[1.02]">
+                    <Button 
+                        className="w-full h-12 rounded-2xl shadow-xl shadow-success/10 bg-success hover:bg-success/90 text-bg-primary font-black uppercase tracking-widest transition-transform hover:scale-[1.02]"
+                        onClick={handleGenerateInvoice}
+                    >
                         Générer Facture Finale
                     </Button>
                     <Button variant="ghost" className="w-full text-[10px] font-black uppercase tracking-widest text-text-muted">

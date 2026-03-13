@@ -46,13 +46,13 @@ export async function adminRoutes(server: FastifyInstance) {
   // Ajouter une dépense
   server.post("/requests/:id/expenses", async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as any
-    const { title, amount, date } = request.body as any
+    const { description, amount, date } = request.body as any
     const admin = (request as any).user
 
     const expenseRepository = AppDataSource.getRepository(Expense)
     const expense = expenseRepository.create({
       requestId: id,
-      description: title, // Le frontend envoie 'title'
+      description,
       amount,
       date: date ? new Date(date) : new Date(),
       addedByAdminId: admin.id

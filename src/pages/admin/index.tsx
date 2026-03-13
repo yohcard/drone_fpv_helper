@@ -3,6 +3,7 @@ import AdminLayout from '@/components/admin/AdminLayout'
 import AdminHome from './AdminHome'
 import AdminRequests from './AdminRequests'
 import AdminRequestDetail from './AdminRequestDetail'
+import AdminInvoice from './AdminInvoice'
 
 export default function AdminRoutes() {
   return (
@@ -11,6 +12,7 @@ export default function AdminRoutes() {
         <Route path="/" element={<AdminHome />} />
         <Route path="/requests" element={<AdminRequests />} />
         <Route path="/requests/:id" element={<AdminRequestDetail />} />
+        <Route path="/requests/:id/invoice" element={<AdminInvoice />} />
         
         {/* Placeholders pour les autres sections admin */}
         <Route path="/clients" element={
