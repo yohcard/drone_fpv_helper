@@ -4,6 +4,8 @@ import AdminHome from './AdminHome'
 import AdminRequests from './AdminRequests'
 import AdminRequestDetail from './AdminRequestDetail'
 import AdminInvoice from './AdminInvoice'
+import AdminClients from './AdminClients'
+import AdminClientDetail from './AdminClientDetail'
 
 export default function AdminRoutes() {
   return (
@@ -14,13 +16,8 @@ export default function AdminRoutes() {
         <Route path="/requests/:id" element={<AdminRequestDetail />} />
         <Route path="/requests/:id/invoice" element={<AdminInvoice />} />
         
-        {/* Placeholders pour les autres sections admin */}
-        <Route path="/clients" element={
-          <div className="animate-fade-in py-10 text-center">
-            <h1 className="text-4xl font-black italic uppercase italic tracking-tighter mb-4">Base de données <span className="text-accent">Clients</span></h1>
-            <p className="text-text-muted font-medium">Gestion des comptes et historiques de maintenance en développement...</p>
-          </div>
-        } />
+        <Route path="/clients" element={<AdminClients />} />
+        <Route path="/clients/:id" element={<AdminClientDetail />} />
         <Route path="/settings" element={
           <div className="animate-fade-in py-10 text-center">
             <h1 className="text-4xl font-black italic uppercase italic tracking-tighter mb-4">Paramètres <span className="text-accent">Système</span></h1>

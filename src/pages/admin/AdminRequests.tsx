@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { 
   Search, 
   Filter, 
@@ -15,13 +15,15 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { PageWrapper } from '@/components/layout/PageWrapper'
+import { toast } from 'sonner'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1'
 
 export default function AdminRequests() {
+  const [searchParams] = useSearchParams()
   const [requests, setRequests] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(searchParams.get('search') || '')
   const [statusFilter, setStatusFilter] = useState('TOUS')
 
   useEffect(() => {
@@ -63,7 +65,13 @@ export default function AdminRequests() {
           <p className="text-text-muted font-medium">Contrôle centralisé de tous les tickets clients ({requests.length})</p>
         </div>
         <div className="flex items-center gap-3">
-             <Button variant="outline" className="rounded-xl border-white/10 hidden md:flex">Exporter CSV</Button>
+             <Button 
+                variant="outline" 
+                className="rounded-xl border-white/10 hidden md:flex"
+                onClick={() => toast.info('Exportation...', { description: 'Génération du fichier CSV des interventions.' })}
+             >
+                Exporter CSV
+             </Button>
              <Badge className="bg-success text-bg-primary h-8 px-4 font-black uppercase tracking-widest text-[10px] rounded-lg border-none">Live DB Connected</Badge>
         </div>
       </div>

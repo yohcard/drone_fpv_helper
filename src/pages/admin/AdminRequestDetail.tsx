@@ -375,9 +375,9 @@ export default function AdminRequestDetail() {
                 </Card>
             </div>
 
-            {/* Communication Panel (Reused from client, but styled for admin) */}
-            <Card className="border-white/5 bg-bg-card/40 overflow-hidden flex flex-col h-[550px] shadow-2xl">
-                <CardHeader className="border-b border-white/5 bg-white/5">
+            {/* Communication Panel - Premium Dark Style */}
+            <Card className="border-border/50 bg-bg-card/50 overflow-hidden flex flex-col h-[550px] shadow-2xl">
+                <CardHeader className="border-b border-border/50 bg-white/5">
                     <CardTitle className="text-lg font-black uppercase italic tracking-widest flex items-center gap-3">
                         <MessageSquare className="w-5 h-5 text-accent" />
                         Communication Directe Client
@@ -401,10 +401,10 @@ export default function AdminRequestDetail() {
                                         <span className="text-[8px] font-mono text-text-muted">{new Date(msg.sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                     </div>
                                     <div className={cn(
-                                        "p-5 rounded-3xl text-sm leading-relaxed shadow-xl",
+                                        "p-5 rounded-3xl text-sm leading-relaxed shadow-xl transition-all",
                                         isMe 
                                             ? "bg-accent text-bg-primary rounded-tr-none font-bold" 
-                                            : "bg-white/5 text-text-primary rounded-tl-none border border-white/10 backdrop-blur-md"
+                                            : "bg-bg-secondary text-text-primary rounded-tl-none border border-border/50 backdrop-blur-md"
                                     )}>
                                         {msg.content}
                                     </div>
@@ -413,15 +413,23 @@ export default function AdminRequestDetail() {
                         })
                     )}
                 </div>
-                <div className="p-6 bg-white/5 border-t border-white/5">
+                <div className="p-6 bg-bg-secondary/50 border-t border-border">
                     <form onSubmit={handleSendMessage} className="flex gap-4">
-                        <Textarea 
-                            placeholder="Écrire au client..."
-                            className="min-h-[50px] h-[50px] py-4 rounded-2xl bg-bg-card border-white/5 focus-visible:ring-accent/40 font-bold italic resize-none"
-                            value={newMessage}
-                            onChange={(e) => setNewMessage(e.target.value)}
-                        />
-                        <Button type="submit" size="icon" className="h-[50px] w-[50px] rounded-2xl shrink-0 shadow-lg shadow-accent/20" disabled={!newMessage.trim()}>
+                        <div className="relative flex-1">
+                            <Textarea 
+                                placeholder="Écrire au client... (Entrée pour envoyer)"
+                                className="min-h-[50px] h-[50px] py-4 rounded-2xl bg-bg-card border-border/50 focus-visible:ring-accent/40 font-bold italic resize-none pr-12 shadow-inner"
+                                value={newMessage}
+                                onChange={(e) => setNewMessage(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault()
+                                        handleSendMessage(e)
+                                    }
+                                }}
+                            />
+                        </div>
+                        <Button type="submit" size="icon" className="h-[50px] w-[50px] rounded-2xl shrink-0 shadow-lg shadow-accent/20 transition-transform active:scale-90" disabled={!newMessage.trim()}>
                             <Send className="w-5 h-5" />
                         </Button>
                     </form>

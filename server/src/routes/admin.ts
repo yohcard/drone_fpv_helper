@@ -83,4 +83,23 @@ export async function adminRoutes(server: FastifyInstance) {
       where: { role: "CLIENT" }
     })
   })
+  
+  // Détails d'un client
+  server.get("/clients/:id" , async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as any
+    const userRepository = AppDataSource.getRepository(User)
+    
+    // On récupère le client avec ses demandes
+    const client = await userRepository.findOne({
+      where: { id },
+      relations: ["requests"]
+    })
+
+    if (!client) return reply.status(404).send({ error: "Client non trouvé" })
+    
+    // On trie les demandes par date de création (DESC) manuellement si nécessaire
+    // ou on laisse TypeORM le faire via relations
+    
+    return client
+  })
 }
