@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
 import { useAuth } from '@/lib/AuthContext'
-import { cn } from '@/lib/utils'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { toast } from 'sonner'
 
@@ -107,17 +106,5 @@ export default function Profile() {
         </div>
       </div>
     </PageWrapper>
-  )
-}
-
-function Badge({ children, variant, className }: any) {
-  return (
-    <span className={cn(
-      "px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border",
-      variant === 'outline' ? "border-border text-text-muted" : "bg-accent/10 text-accent border-accent/20",
-      className
-    )}>
-      {children}
-    </span>
   )
 }

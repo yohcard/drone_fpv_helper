@@ -24,7 +24,6 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/lib/AuthContext'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { toast } from 'sonner'
-import InvoiceTemplate from '@/components/admin/InvoiceTemplate'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1'
 

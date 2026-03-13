@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Loader2, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import InvoiceTemplate from '@/components/admin/InvoiceTemplate'
@@ -8,7 +8,6 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1'
 
 export default function AdminInvoice() {
   const { id } = useParams()
-  const navigate = useNavigate()
   const [request, setRequest] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
 
