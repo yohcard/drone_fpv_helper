@@ -118,10 +118,13 @@ export async function authRoutes(server: FastifyInstance) {
       return reply.status(400).send({ error: "L'email est requis" })
     }
 
-    await authService.requestPasswordReset(email)
+    const result = await authService.requestPasswordReset(email)
     
-    // Pour des raisons de sécurité, on renvoie un message de succès même si l'email n'existe pas
-    return { message: "Si un compte est associé à cet email, un lien de réinitialisation a été envoyé." }
+    if (!result) {
+      return reply.status(404).send({ error: "Aucun compte n'est associé à cette adresse email." })
+    }
+
+    return { message: "Un lien de réinitialisation a été envoyé à votre adresse email." }
   })
 
   // Réinitialisation du mot de passe (action)
