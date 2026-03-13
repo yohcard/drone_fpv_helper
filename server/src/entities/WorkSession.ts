@@ -27,5 +27,5 @@ export class WorkSession {
   note?: string
 
   @CreateDateColumn()
-  loggedAt!: Date
+  createdAt!: Date
 }
