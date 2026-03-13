@@ -65,6 +65,7 @@ export default function NewRequest() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
+        credentials: 'include'
       })
 
       if (!response.ok) throw new Error('Erreur lors de la création de la demande')

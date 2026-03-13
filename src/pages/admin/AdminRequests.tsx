@@ -26,7 +26,9 @@ export default function AdminRequests() {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const response = await fetch(`${API_URL}/admin/requests`)
+        const response = await fetch(`${API_URL}/admin/requests`, {
+          credentials: 'include'
+        })
         if (response.ok) {
           const data = await response.json()
           setRequests(data)

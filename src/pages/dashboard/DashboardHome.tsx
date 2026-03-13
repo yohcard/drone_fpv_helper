@@ -89,28 +89,30 @@ export default function DashboardHome() {
 
           <div className="space-y-3">
             {recentRequests.map((req) => (
-              <Card key={req.id} className="border-border/40 bg-bg-card/40 hover:bg-bg-card/60 transition-colors cursor-pointer group">
-                <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-bg-secondary flex items-center justify-center shrink-0">
-                      <Wrench className="w-5 h-5 text-text-muted" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono text-accent">{req.ticketNumber}</span>
-                        <Badge variant={req.status.toLowerCase() as any}>
-                          {req.status}
-                        </Badge>
+              <Link key={req.id} to={`/dashboard/requests/${req.id}`} className="block group">
+                <Card className="border-border/40 bg-bg-card/40 hover:bg-bg-card/60 transition-all cursor-pointer group hover:border-accent/30 hover:scale-[1.01]">
+                  <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-bg-secondary flex items-center justify-center shrink-0 group-hover:bg-accent/10 transition-colors">
+                        <Wrench className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
                       </div>
-                      <h3 className="font-medium mt-1">{req.issueType}</h3>
-                      <p className="text-xs text-text-muted">Créée le {req.date} • {req.serviceType === 'REPAIR' ? 'Réparation' : 'Montage'}</p>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-mono text-accent">{req.ticketNumber}</span>
+                          <Badge variant={req.status.toLowerCase() as any}>
+                            {req.status}
+                          </Badge>
+                        </div>
+                        <h3 className="font-medium mt-1">{req.issueType}</h3>
+                        <p className="text-xs text-text-muted">Créée le {req.date} • {req.serviceType === 'REPAIR' ? 'Réparation' : 'Montage'}</p>
+                      </div>
                     </div>
-                  </div>
-                  <Button variant="outline" size="sm" className="w-full sm:w-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                    Gérer
-                  </Button>
-                </CardContent>
-              </Card>
+                    <Button variant="outline" size="sm" className="w-full sm:w-auto opacity-0 group-hover:opacity-100 transition-opacity" asChild>
+                      <span>Gérer</span>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>

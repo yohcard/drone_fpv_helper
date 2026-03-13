@@ -30,7 +30,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await fetch(`${API_URL}/auth/logout`, { method: 'POST' })
+      await fetch(`${API_URL}/auth/logout`, { 
+        method: 'POST',
+        credentials: 'include'
+      })
     } catch (error) {
       console.error('Logout error:', error)
     } finally {
@@ -41,7 +44,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const checkAuth = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch(`${API_URL}/auth/me`)
+      const response = await fetch(`${API_URL}/auth/me`, {
+        credentials: 'include'
+      })
       if (response.ok) {
         const data = await response.json()
         setUser(data.user)

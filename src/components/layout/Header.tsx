@@ -61,7 +61,7 @@ export default function Header() {
                   <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
                     <Avatar className="h-10 w-10 border border-border">
                       <AvatarFallback className="bg-accent/10 text-accent font-heading">
-                        {user.firstName[0]}{user.lastName[0]}
+                        {user?.firstName?.[0] || '?'}{user?.lastName?.[0] || ''}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -141,8 +141,8 @@ export default function Header() {
             {user ? (
               <>
                 <div className="px-3 py-2 mb-2">
-                  <p className="text-sm font-medium">{user.firstName} {user.lastName}</p>
-                  <p className="text-xs text-text-muted">{user.email}</p>
+                  <p className="text-sm font-medium">{user?.firstName || ''} {user?.lastName || ''}</p>
+                  <p className="text-xs text-text-muted">{user?.email || ''}</p>
                 </div>
                 <Button variant="outline" className="w-full justify-start" size="sm" asChild>
                   <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>

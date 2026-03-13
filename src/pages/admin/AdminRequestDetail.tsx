@@ -46,8 +46,8 @@ export default function AdminRequestDetail() {
   const fetchDetail = async () => {
     try {
       const [reqRes, msgRes] = await Promise.all([
-        fetch(`${API_URL}/admin/requests/${id}`),
-        fetch(`${API_URL}/messages/${id}`)
+        fetch(`${API_URL}/admin/requests/${id}`, { credentials: 'include' }),
+        fetch(`${API_URL}/messages/${id}`, { credentials: 'include' })
       ])
 
       if (reqRes.ok) setRequest(await reqRes.json())
@@ -68,7 +68,8 @@ export default function AdminRequestDetail() {
       await fetch(`${API_URL}/admin/requests/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({ status: newStatus }),
+        credentials: 'include'
       })
       fetchDetail()
     } catch (error) {
@@ -81,7 +82,8 @@ export default function AdminRequestDetail() {
       await fetch(`${API_URL}/admin/requests/${id}/sessions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ durationHalfHours: Number(sessionDuration) })
+        body: JSON.stringify({ durationHalfHours: Number(sessionDuration) }),
+        credentials: 'include'
       })
       toast.success('Temps enregistré', {
         description: `Session de ${Number(sessionDuration) * 0.5}h ajoutée avec succès.`,
@@ -99,7 +101,8 @@ export default function AdminRequestDetail() {
       await fetch(`${API_URL}/admin/requests/${id}/expenses`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: expenseTitle, amount: Number(expenseAmount) })
+        body: JSON.stringify({ title: expenseTitle, amount: Number(expenseAmount) }),
+        credentials: 'include'
       })
       setExpenseTitle('')
       setExpenseAmount('')
@@ -121,7 +124,8 @@ export default function AdminRequestDetail() {
       const response = await fetch(`${API_URL}/messages/${id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: newMessage })
+        body: JSON.stringify({ content: newMessage, senderRole: 'ADMIN' }),
+        credentials: 'include'
       })
 
       if (response.ok) {

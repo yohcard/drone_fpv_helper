@@ -24,7 +24,9 @@ export default function RequestsList() {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const response = await fetch(`${API_URL}/requests`)
+        const response = await fetch(`${API_URL}/requests/my`, {
+          credentials: 'include'
+        })
         if (response.ok) {
           const data = await response.json()
           setRequests(data)

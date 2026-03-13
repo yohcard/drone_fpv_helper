@@ -37,8 +37,8 @@ export default function RequestDetail() {
     const fetchDetail = async () => {
       try {
         const [reqRes, msgRes] = await Promise.all([
-          fetch(`${API_URL}/requests/${id}`),
-          fetch(`${API_URL}/messages/${id}`)
+          fetch(`${API_URL}/requests/${id}`, { credentials: 'include' }),
+          fetch(`${API_URL}/messages/${id}`, { credentials: 'include' })
         ])
 
         if (reqRes.ok) setRequest(await reqRes.json())
@@ -61,7 +61,8 @@ export default function RequestDetail() {
       const response = await fetch(`${API_URL}/messages/${id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: newMessage })
+        body: JSON.stringify({ content: newMessage, senderRole: 'CLIENT' }),
+        credentials: 'include'
       })
 
       if (response.ok) {

@@ -90,6 +90,24 @@ export async function authRoutes(server: FastifyInstance) {
   server.get("/me", {
     preHandler: [server.authenticate]
   }, async (request) => {
-    return { user: (request as any).user }
+    const decodedUser = (request as any).user
+    const user = await authService.findByEmail(decodedUser.email || "") // Or findById if available
+    
+    // Fallback to ID if email not in token (let's check findById)
+    const fullUser = await authService.findById(decodedUser.id)
+
+    if (!fullUser) {
+      throw new Error("Utilisateur non trouvé")
+    }
+
+    return { 
+      user: {
+        id: fullUser.id,
+        email: fullUser.email,
+        firstName: fullUser.firstName,
+        lastName: fullUser.lastName,
+        role: fullUser.role
+      }
+    }
   })
 }
