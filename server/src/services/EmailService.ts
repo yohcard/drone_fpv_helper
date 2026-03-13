@@ -9,16 +9,24 @@ export class EmailService {
   private transporter: nodemailer.Transporter
 
   constructor() {
-    // Configuration du transporteur (Utilise Ethereal pour le dev si non configuré)
-    this.transporter = nodemailer.createTransport({
+    const config: any = {
       host: process.env.SMTP_HOST || 'smtp.ethereal.email',
       port: Number(process.env.SMTP_PORT) || 587,
       secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER || 'placeholder@ethereal.email',
-        pass: process.env.SMTP_PASS || 'placeholder_pass',
-      },
-    })
+    }
+
+    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+      config.auth = {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      }
+    } else if (process.env.NODE_ENV === 'development') {
+      // En dev, si pas d'auth, on utilise le transport JSON pour éviter les erreurs SMTP
+      this.transporter = nodemailer.createTransport({ jsonTransport: true })
+      return
+    }
+
+    this.transporter = nodemailer.createTransport(config)
   }
 
   /**
@@ -142,13 +150,35 @@ export class EmailService {
    */
   public async sendEmail(to: string, subject: string, html: string) {
     try {
-      await this.transporter.sendMail({
+      const info = await this.transporter.sendMail({
         from: `"drone-builder.ch" <${process.env.SMTP_FROM || 'noreply@drone-builder.ch'}>`,
         to,
         subject,
         html,
       })
+      
       console.log(`Email sent to ${to}: ${subject}`)
+      
+      // Si on utilise Ethereal ou le transport JSON, on affiche les détails
+      if (!process.env.SMTP_HOST || process.env.SMTP_HOST.includes('ethereal')) {
+        console.log('--- Email Detail (Dev Mode) ---')
+        if (info.message) {
+          // Log JSON content or extract URL
+          const messageObj = JSON.parse(info.message)
+          console.log(`To: ${messageObj.to}`)
+          console.log(`Subject: ${messageObj.subject}`)
+          // Extraire l'URL de réinitialisation du HTML pour la rendre facile à cliquer
+          const urlMatch = messageObj.html.match(/href="([^"]+)"/)
+          if (urlMatch) {
+            console.log(`---> ACTION URL: ${urlMatch[1]}`)
+          }
+        }
+        const previewUrl = nodemailer.getTestMessageUrl(info)
+        if (previewUrl) {
+          console.log('Preview URL: %s', previewUrl)
+        }
+        console.log('--------------------------------')
+      }
     } catch (error) {
       console.error(`Failed to send email to ${to}:`, error)
     }
