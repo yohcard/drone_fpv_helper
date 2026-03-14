@@ -37,7 +37,7 @@ const services = [
     icon: Home,
     title: 'Dépannage à domicile',
     description:
-      'Je me déplace directement chez vous en Suisse. Pas besoin d\'envoyer votre drone par la poste.',
+      'Nous nous déplaçons directement chez vous en Suisse. Pas besoin d\'envoyer votre drone par la poste.',
   },
 ]
 
@@ -45,13 +45,13 @@ const services = [
 const steps = [
   {
     number: '01',
-    title: 'Décris ta panne',
-    description: 'Remplis le formulaire en décrivant le problème ou le montage souhaité. Ajoute des photos si possible.',
+    title: 'Décrivez votre panne',
+    description: 'Remplissez le formulaire en décrivant le problème ou le montage souhaité. Ajoutez des photos si possible.',
   },
   {
     number: '02',
-    title: 'Je me déplace',
-    description: 'On fixe un rendez-vous et je viens chez toi avec tout le matériel nécessaire.',
+    title: 'Nous nous déplaçons',
+    description: 'Nous fixons un rendez-vous et nous venons chez vous avec tout le matériel nécessaire.',
   },
   {
     number: '03',
@@ -113,7 +113,7 @@ function HeroSection() {
         {/* Sous-titre */}
         <p className="text-lg sm:text-xl text-text-muted max-w-2xl mx-auto mb-10 animate-fade-in delay-200">
           Réparation, diagnostic et montage de drones FPV. 
-          Je me déplace chez vous avec tout le matériel nécessaire.
+          Nous nous déplaçons chez vous avec tout le matériel nécessaire.
         </p>
 
         {/* CTA */}
@@ -157,7 +157,7 @@ function ServicesSection() {
             Services
           </p>
           <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4">
-            Ce que je propose
+            Ce que nous proposons
           </h2>
           <p className="text-text-muted max-w-xl mx-auto">
             Un service complet pour tous vos besoins en drones FPV, du diagnostic à la livraison.
@@ -270,7 +270,7 @@ function ContactSection() {
             Une question ? Un projet ?
           </h2>
           <p className="text-text-muted max-w-xl mx-auto">
-            Décrivez votre besoin et je vous recontacte rapidement.
+            Décrivez votre besoin et nous vous recontactons rapidement.
           </p>
         </div>
 

@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { PlusCircle, ArrowRight, ClipboardList, Clock, CheckCircle2, MessageSquare, Wrench } from 'lucide-react'
+import { PlusCircle, ArrowRight, ClipboardList, Clock, CheckCircle2, MessageSquare, Wrench, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -7,34 +8,57 @@ import { useAuth } from '@/lib/AuthContext'
 import { cn } from '@/lib/utils'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1'
+
 export default function DashboardHome() {
   const { user } = useAuth()
+  const [requests, setRequests] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Mock data for overview (will be replaced by API calls)
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const response = await fetch(`${API_URL}/requests/my`, {
+          credentials: 'include'
+        })
+        if (response.ok) {
+          const data = await response.json()
+          setRequests(data)
+        }
+      } catch (error) {
+        console.error('Error fetching requests:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchRequests()
+  }, [])
+
   const stats = [
-    { label: 'En cours', value: '2', icon: Clock, color: 'text-accent' },
-    { label: 'Terminées', value: '5', icon: CheckCircle2, color: 'text-success' },
-    { label: 'Messages', value: '3', icon: MessageSquare, color: 'text-blue-500' },
+    { 
+      label: 'En cours', 
+      value: requests.filter(r => ['RECU', 'DIAGNOSTIC', 'EN_REPARATION', 'WAITING_PARTS'].includes(r.status)).length.toString(), 
+      icon: Clock, 
+      color: 'text-accent' 
+    },
+    { 
+      label: 'Terminées', 
+      value: requests.filter(r => r.status === 'TERMINE').length.toString(), 
+      icon: CheckCircle2, 
+      color: 'text-success' 
+    },
+    { label: 'Messages', value: '0', icon: MessageSquare, color: 'text-blue-500' },
   ]
 
-  const recentRequests = [
-    { 
-      id: '1', 
-      ticketNumber: 'DR-2024-001', 
-      serviceType: 'REPAIR', 
-      issueType: 'ESC brûlé', 
-      status: 'EN_REPARATION', 
-      date: '12 Mars 2024' 
-    },
-    { 
-      id: '2', 
-      ticketNumber: 'DR-2024-002', 
-      serviceType: 'BUILD', 
-      issueType: 'Montage 5 pouces', 
-      status: 'RECU', 
-      date: '10 Mars 2024' 
-    },
-  ]
+  const recentRequests = requests.slice(0, 5)
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    })
+  }
 
   return (
     <PageWrapper className="space-y-10 pb-20">
@@ -88,32 +112,42 @@ export default function DashboardHome() {
           </div>
 
           <div className="space-y-3">
-            {recentRequests.map((req) => (
-              <Link key={req.id} to={`/dashboard/requests/${req.id}`} className="block group">
-                <Card className="border-border/40 bg-bg-card/40 hover:bg-bg-card/60 transition-all cursor-pointer group hover:border-accent/30 hover:scale-[1.01]">
-                  <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-bg-secondary flex items-center justify-center shrink-0 group-hover:bg-accent/10 transition-colors">
-                        <Wrench className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono text-accent">{req.ticketNumber}</span>
-                          <Badge variant={req.status.toLowerCase() as any}>
-                            {req.status}
-                          </Badge>
+            {isLoading ? (
+              <div className="flex items-center justify-center p-12">
+                <Loader2 className="w-8 h-8 text-accent animate-spin" />
+              </div>
+            ) : recentRequests.length === 0 ? (
+              <Card className="border-border/40 bg-bg-card/40 p-12 text-center">
+                <p className="text-text-muted">Vous n'avez pas encore de demandes.</p>
+              </Card>
+            ) : (
+              recentRequests.map((req) => (
+                <Link key={req.id} to={`/dashboard/requests/${req.id}`} className="block group">
+                  <Card className="border-border/40 bg-bg-card/40 hover:bg-bg-card/60 transition-all cursor-pointer group hover:border-accent/30 hover:scale-[1.01]">
+                    <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-bg-secondary flex items-center justify-center shrink-0 group-hover:bg-accent/10 transition-colors">
+                          <Wrench className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
                         </div>
-                        <h3 className="font-medium mt-1">{req.issueType}</h3>
-                        <p className="text-xs text-text-muted">Créée le {req.date} • {req.serviceType === 'REPAIR' ? 'Réparation' : 'Montage'}</p>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-mono text-accent">{req.ticketNumber}</span>
+                            <Badge variant={req.status.toLowerCase() as any}>
+                              {req.status}
+                            </Badge>
+                          </div>
+                          <h3 className="font-medium mt-1">{req.issueType}</h3>
+                          <p className="text-xs text-text-muted">Créée le {formatDate(req.createdAt)} • {req.serviceType === 'REPAIR' ? 'Réparation' : 'Montage'}</p>
+                        </div>
                       </div>
-                    </div>
-                    <Button variant="outline" size="sm" className="w-full sm:w-auto opacity-0 group-hover:opacity-100 transition-opacity" asChild>
-                      <span>Gérer</span>
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+                      <Button variant="outline" size="sm" className="w-full sm:w-auto opacity-0 group-hover:opacity-100 transition-opacity" asChild>
+                        <span>Gérer</span>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))
+            )}
           </div>
         </div>
 
